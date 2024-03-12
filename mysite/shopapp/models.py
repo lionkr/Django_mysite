@@ -3,6 +3,13 @@ from django.db import models
 
 
 class Product(models.Model):
+    orders = None
+
+    class Meta:
+        ordering = ["name", "price"]
+        # db_table = "tech_products"
+        # verbose_name_plural = "products"
+
     objects = None
     name = models.CharField(max_length=100)
     description = models.TextField(null=False, blank=True)
@@ -11,11 +18,22 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     archived = models.BooleanField(default=False)
 
+    # @property
+    # def description_short(self) -> str:
+    #     if len(self.description) < 48:
+    #         return self.description
+    #     return self.description[:48] + "..."
+
+    def __str__(self) -> str:
+        return f"Product(pk={self.pk}, name={self.name!r})"
+
 
 class Order(models.Model):
+    objects = None
     delivery_address = models.TextField(null=True, blank=True)
     promocode = models.CharField(max_length=20, null=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     products = models.ManyToManyField(Product, related_name='orders')
+
 
